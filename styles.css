@@ -146,6 +146,7 @@ body {
 /* Multiple Choice & True/False Styles */
 .options {
     display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to next line */
     justify-content: center;
     gap: 20px;
     margin-bottom: 30px;
@@ -162,7 +163,24 @@ body {
     text-align: center;
     position: relative;
     overflow: hidden;
+    flex-grow: 1; /* Allow options to grow */
+    flex-basis: 45%; /* Default basis for two columns */
+    min-width: 250px; /* Minimum width for options */
 }
+
+/* Force vertical layout on smaller screens */
+@media (max-width: 600px) { /* Adjust breakpoint as needed */
+    .options {
+        flex-direction: column; /* Stack items vertically */
+        align-items: center; /* Center items horizontally */
+    }
+    .option {
+        width: 90%; /* Take almost full width */
+        max-width: 400px; /* Limit max width for very large phones/small tablets */
+        flex-basis: auto; /* Reset flex basis */
+    }
+}
+
 
 .option:hover {
     border-color: #4CAF50;
