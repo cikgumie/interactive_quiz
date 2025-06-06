@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Interaktif Pemikiran Komputasional</title>
+    <!-- Link to external CSS file -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <h1>🧠 Quiz Interaktif Pemikiran Komputasional</h1>
+            <p>Tingkatan 3 - BAB 1: Konsep Asas Pemikiran Komputasional</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+
+        <div class="game-content">
+            <!-- Start Screen -->
+            <div class="start-screen" id="startScreen">
+                <h2>🎯 Selamat Datang ke Quiz Interaktif!</h2>
+                <p style="font-size: 1.2em; margin: 30px 0; color: #666;">
+                    Uji pengetahuan anda dengan pelbagai jenis soalan interaktif
+                </p>
+                <!-- Name Input Field Updated Here with a container div -->
+                <div class="name-input-container">
+                    <label for="userNameInput">Masukkan Nama Anda:</label>
+                    <input type="text" id="userNameInput" placeholder="Contoh: Ali Bin Abu" class="name-input" />
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number">12</div>
+                        <div>Soalan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5</div>
+                        <div>Jenis Soalan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">⏱️</div>
+                        <div>Tiada Had Masa</div>
+                    </div>
+                </div>
+                <div style="margin: 20px 0; font-size: 1.1em; color: #555;">
+                    <p><strong>Jenis Soalan:</strong></p>
+                    <p>🔘 Pilihan Berganda • 🔄 Drag & Drop • 🔗 Matching • ✏️ Fill in the Blank • ✅ True/False</p>
+                </div>
+                <button class="btn" id="startBtn">🚀 Mula Quiz</button>
+            </div>
+
+            <!-- Question Screen -->
+            <div class="question-screen" id="questionScreen">
+                <div class="question-type-badge" id="questionType">Pilihan Berganda</div>
+                <div class="question-counter" id="questionCounter">Soalan 1 dari 12</div>
+                <div class="question" id="questionText">Soalan akan dipaparkan di sini</div>
+                <div id="questionContainer">
+                    <!-- Question content will be dynamically inserted here -->
+                </div>
+                <button class="btn" id="nextBtn" disabled>Semak Jawapan</button>
+            </div>
+
+            <!-- Result Screen -->
+            <div class="result-screen" id="resultScreen">
+                <h2>🎉 Tahniah, <span id="displayUserName"></span>! Quiz Selesai!</h2>
+                <div class="score" id="finalScore">0/12</div>
+                <div class="feedback" id="feedbackMessage"></div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="correctAnswers">0</div>
+                        <div>Betul</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="wrongAnswers">0</div>
+                        <div>Salah</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="percentage">0%</div>
+                        <div>Peratusan</div>
+                    </div>
+                </div>
+                <button class="btn" id="restartBtn">🔄 Main Lagi</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Question data -->
+    <script>
+        // Define the questions array globally so it's accessible by script.js
+        const questions = [
+            {
+                type: 'multiple-choice',
+                question: "Siapakah individu pertama yang memperkenalkan pemikiran komputasional untuk pembelajaran?",
+                options: ["Alan Turing", "Seymour Papert", "John von Neumann", "Charles Babbage"],
+                correct: 1,
+                explanation: "Seymour Papert merupakan individu pertama yang memperkenalkan pemikiran komputasional untuk pembelajaran."
+            },
+            {
+                type: 'drag-drop',
+                question: "Susunkan fasa pembangunan atur cara mengikut urutan yang betul:",
+                dragItems: ["Pengujian dan Penyahpepijatan", "Pengekodan", "Analisis Masalah", "Dokumentasi", "Reka Bentuk Atur Cara"],
+                dropZones: ["Fasa 1", "Fasa 2", "Fasa 3", "Fasa 4", "Fasa 5"],
+                correctOrder: [2, 4, 1, 0, 3], // indices of dragItems in correct order
+                explanation: "Urutan yang betul: 1) Analisis Masalah, 2) Reka Bentuk Atur Cara, 3) Pengekodan, 4) Pengujian dan Penyahpepijatan, 5) Dokumentasi."
+            },
+            {
+                type: 'matching',
+                question: "Padankan teknik pemikiran komputasional dengan deskripsinya:",
+                leftItems: ["Leraian", "Pengecaman Corak", "Peniskalaan", "Pengitlakan"],
+                rightItems: [
+                    "Memecahkan masalah besar kepada bahagian kecil",
+                    "Menganalisis untuk mengecam corak tertentu",
+                    "Fokus pada aspek penting sahaja",
+                    "Menulis algoritma untuk menyelesaikan masalah"
+                ],
+                correctMatches: [0, 1, 2, 3], // indices showing correct pairs
+                explanation: "Setiap teknik pemikiran komputasional mempunyai peranan khusus dalam menyelesaikan masalah secara sistematik."
+            },
+            {
+                type: 'fill-blank',
+                question: "Lengkapkan ayat berikut:",
+                text: "Pemikiran komputasional ditakrifkan sebagai satu proses pemikiran bertujuan untuk _____ masalah oleh manusia sendiri berbantukan _____ atau kedua-duanya sekali menggunakan konsep asas _____.",
+                blanks: ["menyelesaikan", "mesin", "sains komputer"],
+                wordBank: ["menyelesaikan", "mesin", "sains komputer", "teknologi", "komputer", "algoritma"],
+                explanation: "Definisi lengkap: Pemikiran komputasional adalah proses pemikiran untuk menyelesaikan masalah dengan bantuan mesin menggunakan konsep asas sains komputer."
+            },
+            {
+                type: 'true-false',
+                question: "Ralat sintaks akan menyebabkan atur cara terhenti tiba-tiba semasa pelaksanaan.",
+                correct: false,
+                explanation: "SALAH. Ralat sintaks akan dikesan sebelum atur cara dijalankan. Ralat yang menyebabkan atur cara terhenti tiba-tiba semasa pelaksanaan adalah ralat masa larian (runtime error)."
+            },
+            {
+                type: 'multiple-choice',
+                question: "Manakah contoh ralat logik?",
+                options: ["Tertinggal tanda kurung", "Pembahagian dengan sifar", "Kesalahan formula pengiraan", "Penggunaan pemboleh ubah tidak wujud"],
+                correct: 2,
+                explanation: "Ralat logik disebabkan kesilapan logik pengatur cara seperti kesalahan formula pengiraan, menyebabkan output salah tetapi program masih berjalan."
+            },
+            {
+                type: 'drag-drop',
+                question: "Kategorikan jenis ralat berikut kepada kategori yang sesuai:",
+                dragItems: ["Tertinggal tanda kurung", "Pembahagian sifar", "Formula salah", "Salah eja kata kunci"],
+                dropZones: ["Ralat Sintaks", "Ralat Masa Larian", "Ralat Logik"],
+                correctAssignment: [0, 1, 2, 0], // which drop zone each item belongs to
+                explanation: "Ralat Sintaks: kesalahan tatabahasa kod. Ralat Masa Larian: program terhenti tiba-tiba. Ralat Logik: output salah tetapi program berjalan."
+            },
+            {
+                type: 'fill-blank',
+                question: "Lengkapkan pernyataan tentang dokumentasi:",
+                text: "Dokumentasi _____ adalah rujukan untuk pengatur cara baharu dalam organisasi, manakala dokumentasi _____ digunakan oleh pengguna akhir dan terbahagi kepada dokumen _____ dan panduan _____.",
+                blanks: ["dalaman", "luaran", "pustaka", "pengguna"],
+                wordBank: ["dalaman", "luaran", "pustaka", "pengguna", "sistem", "teknikal"],
+                explanation: "Dokumentasi dalaman untuk pengatur cara, dokumentasi luaran untuk pengguna akhir (dokumen pustaka dan panduan pengguna)."
+            },
+            {
+                type: 'matching',
+                question: "Padankan aktiviti dengan fasa pembangunan yang sesuai:",
+                leftItems: ["Temu bual pengguna", "Menulis pseudokod", "Debugging program", "Menulis komen kod"],
+                rightItems: ["Fasa Analisis Masalah", "Fasa Reka Bentuk", "Fasa Pengujian", "Fasa Dokumentasi"],
+                correctMatches: [0, 1, 2, 3],
+                explanation: "Setiap fasa mempunyai aktiviti khusus: Analisis (temu bual), Reka Bentuk (pseudokod), Pengujian (debugging), Dokumentasi (komen)."
+            },
+            {
+                type: 'true-false',
+                question: "Hour of Code adalah kempen yang dianjurkan oleh KPM dan MDEC untuk mendedahkan murid kepada pengekodan.",
+                correct: true,
+                explanation: "BETUL. Hour of Code adalah kempen KPM dan MDEC bertujuan mendedahkan dan meningkatkan kesedaran murid terhadap pengekodan, pengaturcaraan, dan sains komputer."
+            },
+            {
+                type: 'multiple-choice',
+                question: "Manakah mesej ralat yang menunjukkan TypeError dalam Python?",
+                options: ["invalid syntax", "division by zero", "must be str, not float", "name 'x' is not defined"],
+                correct: 2,
+                explanation: "TypeError: must be str, not float muncul apabila mencantumkan jenis data yang tidak serasi, seperti menggabungkan string dengan float menggunakan operator +."
+            },
+            {
+                type: 'fill-blank',
+                question: "Lengkapkan pernyataan tentang teknik pemikiran komputasional:",
+                text: "Teknik _____ digunakan untuk menganalisis masalah dengan memecahkan masalah besar kepada bahagian-bahagian kecil. Setelah itu, teknik _____ membantu mengecam corak tertentu dalam setiap bahagian kecil.",
+                blanks: ["leraian", "pengecaman corak"],
+                wordBank: ["leraian", "pengecaman corak", "peniskalaan", "pengitlakan", "analisis", "sintesis"],
+                explanation: "Leraian memecahkan masalah besar, kemudian pengecaman corak mencari persamaan dan pola untuk penyelesaian yang lebih efisien."
+            }
+        ];
+    </script>
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
